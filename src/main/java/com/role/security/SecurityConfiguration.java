@@ -22,6 +22,7 @@ import jakarta.servlet.DispatcherType;
 
 @Configuration
 @EnableWebSecurity
+
 public class SecurityConfiguration {
     
 	@Bean
@@ -45,10 +46,14 @@ public class SecurityConfiguration {
 		http.authorizeHttpRequests(http_request -> http_request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD,DispatcherType.ERROR).permitAll()
                .requestMatchers(HttpMethod.POST, "/employees/register").hasAnyAuthority("HR","MANAGER")
-               .requestMatchers(HttpMethod.GET, "/employees").hasAnyAuthority("HR","MANAGER")
+               .requestMatchers(HttpMethod.PUT, "/employees/update/{id}").hasAnyAuthority("HR","MANAGER")
+               .requestMatchers(HttpMethod.GET, "/employees").permitAll()
+               
+               .requestMatchers(HttpMethod.DELETE, "/employees/{id}").hasAnyAuthority("HR","MANAGER")
                .requestMatchers(HttpMethod.GET, "/projects").permitAll()
                .requestMatchers(HttpMethod.POST, "/projects").hasAuthority("MANAGER")
                .requestMatchers(HttpMethod.PUT, "/projects").hasAuthority("MANAGER")
+               .requestMatchers(HttpMethod.PATCH, "/projects").hasAuthority("MANAGER")
                .requestMatchers(HttpMethod.DELETE, "/projects").hasAuthority("MANAGER")
              .anyRequest().authenticated()).authenticationProvider(daoAuthenticationProvider())
 		.httpBasic(Customizer.withDefaults())

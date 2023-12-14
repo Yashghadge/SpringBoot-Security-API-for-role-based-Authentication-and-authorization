@@ -20,6 +20,8 @@ public class EmployeeService {
 	@Autowired
 	EmployeeRepository employeeRepository;
 	
+	EmployeeResponseWrapper erw= new EmployeeResponseWrapper();
+	
 	public ResponseEntity<?> registerEmployee( Employee employee) {
 		String name = employee.getName();
 		String username = employee.getUsername();
@@ -36,12 +38,34 @@ public class EmployeeService {
 		}else if (password.equals(confpassword)) {
 			employee.setPassword(passwordEncoder.encode(password));
 			Employee  register_emp =employeeRepository.save(employee);
-			EmployeeResponseWrapper erw= new EmployeeResponseWrapper();
+			
 			erw.setMessage("Employee Registered Successfully!");
 			erw.setObject(register_emp);
 			return new ResponseEntity<>(erw,HttpStatus.CREATED);
 		}else {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,password+"PASSWORD doesn't match");
 		}
+	}
+	
+	public ResponseEntity<?> updateEmployee(int id,Employee employee) {
+	  Employee empfound = employeeRepository.findById(id).orElseThrow(
+			  ()->{
+				  throw new ResponseStatusException(HttpStatus.NOT_FOUND,id+" not found");
+			  });
+	  employee.setId(id);
+	  String password = employee.getPassword();
+	  employee.setPassword(passwordEncoder.encode(password));
+	  Employee  update_emp =employeeRepository.save(employee);
+		
+		erw.setMessage("Employee Successfully updated!");
+		erw.setObject(update_emp);
+		return new ResponseEntity<>(erw,HttpStatus.OK);
+	}
+	
+	public ResponseEntity<?> deleteEmployee(int id) {
+		employeeRepository.deleteById(id);
+		erw.setObject(null);
+		return new  ResponseEntity<>(erw,HttpStatus.NO_CONTENT);
+		
 	}
 }
