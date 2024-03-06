@@ -62,6 +62,18 @@ public class EmployeeService {
 		return new ResponseEntity<>(erw,HttpStatus.OK);
 	}
 	
+	
+	public ResponseEntity<?> GetByEmpID(int id) {
+	  Employee getEmp=	employeeRepository.findById(id).orElseThrow(
+			  ()->{
+				  throw new ResponseStatusException(HttpStatus.NOT_FOUND,id+" not found");  
+			  });
+	  erw.setMessage("Employee data fetched suceessfully");
+		erw.setObject(getEmp);
+		return new ResponseEntity<>(erw,HttpStatus.OK);
+	}
+	
+	
 	public ResponseEntity<?> deleteEmployee(int id) {
 		employeeRepository.deleteById(id);
 		erw.setObject(null);

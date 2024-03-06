@@ -47,14 +47,16 @@ public class SecurityConfiguration {
 				.dispatcherTypeMatchers(DispatcherType.FORWARD,DispatcherType.ERROR).permitAll()
                .requestMatchers(HttpMethod.POST, "/employees/register").hasAnyAuthority("HR","MANAGER")
                .requestMatchers(HttpMethod.PUT, "/employees/update/{id}").hasAnyAuthority("HR","MANAGER")
-               .requestMatchers(HttpMethod.GET, "/employees").permitAll()
-               
+               .requestMatchers(HttpMethod.GET, "/employees").hasAnyAuthority("HR","MANAGER")
+               .requestMatchers(HttpMethod.GET, "/employees/**").hasAnyAuthority("HR","MANAGER")
+              
                .requestMatchers(HttpMethod.DELETE, "/employees/{id}").hasAnyAuthority("HR","MANAGER")
                .requestMatchers(HttpMethod.GET, "/projects").permitAll()
+               .requestMatchers(HttpMethod.GET, "/projects/{id}").permitAll()
                .requestMatchers(HttpMethod.POST, "/projects").hasAuthority("MANAGER")
-               .requestMatchers(HttpMethod.PUT, "/projects").hasAuthority("MANAGER")
+               .requestMatchers(HttpMethod.PUT, "/projects/{id}").hasAuthority("MANAGER")
                .requestMatchers(HttpMethod.PATCH, "/projects").hasAuthority("MANAGER")
-               .requestMatchers(HttpMethod.DELETE, "/projects").hasAuthority("MANAGER")
+               .requestMatchers(HttpMethod.DELETE, "/projects/{id}").hasAuthority("MANAGER")
              .anyRequest().authenticated()).authenticationProvider(daoAuthenticationProvider())
 		.httpBasic(Customizer.withDefaults())
 		;
